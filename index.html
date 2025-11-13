@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Father Dust's Thinkery - Promotes Thought and Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'cyber-pink': '#F50057',
+              'cyber-green': '#39FF14',
+              'cyber-purple': '#9400D3',
+            },
+            fontFamily: {
+              sans: ['FKGroteskNeue', 'Geist', 'Inter', 'sans-serif'],
+            },
+          }
+        }
+      }
+    </script>
+    <style type="text/tailwindcss">
+      @layer base {
+        :root {
+          --background: 10 10 10;
+          --foreground: 245 245 245;
+          --primary: 245 0 87; /* Neon Pink */
+          --primary-foreground: 10 10 10;
+          --secondary: 148 0 211; /* Cyber Purple */
+          --secondary-foreground: 245 245 245;
+          --border: 245 0 87 / 0.3;
+          --surface: 20 20 20;
+          --card-border: 245 0 87 / 0.2;
+          --error: 255 84 89;
+          --success: 57 255 20; /* Neon Green */
+        }
+
+        .dark {
+          --background: 10 10 10;
+          --foreground: 245 245 245;
+          --primary: 245 0 87; /* Neon Pink */
+          --primary-foreground: 10 10 10;
+          --secondary: 148 0 211; /* Cyber Purple */
+          --secondary-foreground: 245 245 245;
+          --border: 245 0 87 / 0.3;
+          --surface: 20 20 20;
+          --card-border: 245 0 87 / 0.2;
+          --error: 255 84 89;
+          --success: 57 255 20; /* Neon Green */
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
