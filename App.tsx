@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Product } from './types';
 import { PRODUCTS } from './constants';
 import Header from './components/Header';
@@ -7,7 +7,7 @@ import CartSidebar from './components/CartSidebar';
 import CheckoutModal from './components/CheckoutModal';
 import ProductDetailModal from './components/ProductDetailModal';
 import { SparklesIcon } from './components/Icons';
-import { generateImage } from './services/geminiService';
+import ChatBox from './components/ChatBox';
 
 const App: React.FC = () => {
   const [cart, setCart] = useState<Product[]>([]);
@@ -20,35 +20,7 @@ const App: React.FC = () => {
   const [requestResponse, setRequestResponse] = useState('');
   const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
   
-  const [productList, setProductList] = useState<Product[]>(PRODUCTS);
-
-  useEffect(() => {
-    const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
-
-    const generateCovers = async () => {
-        // Process products sequentially with a delay to avoid hitting API rate limits.
-        for (const [index, product] of PRODUCTS.entries()) {
-            try {
-                const prompt = product.imageKeywords || product.title;
-                const imageUrl = await generateImage(prompt);
-                setProductList(prevList => {
-                    const newList = [...prevList];
-                    newList[index] = { ...newList[index], coverImageUrl: imageUrl };
-                    return newList;
-                });
-                // Add a small delay between successful API calls.
-                await delay(1500);
-            } catch (error) {
-                console.error(`Failed to generate cover for "${product.title}":`, error);
-                // If an error occurs, wait a bit longer before the next attempt.
-                await delay(3000);
-            }
-        }
-    };
-
-    generateCovers();
-  }, []);
-
+  const [productList] = useState<Product[]>(PRODUCTS);
 
   const handleAddToCart = useCallback((product: Product) => {
     setCart((prevCart) => {
@@ -129,12 +101,16 @@ const App: React.FC = () => {
             <div className="max-w-4xl mx-auto text-center">
                 <SparklesIcon className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--primary))]" />
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">AI-Powered Thinkery Tools</h2>
-                <p className="text-[hsl(var(--foreground))] text-opacity-70 max-w-2xl mx-auto mb-12">Request new guides tailored to your needs.</p>
+                <p className="text-[hsl(var(--foreground))] text-opacity-70 max-w-2xl mx-auto mb-12">Engage with our AI assistant or request new guides tailored to your needs.</p>
                 
-                <div className="text-left">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
+                    {/* Chat with Father Dust */}
+                    <ChatBox />
+
                     {/* Request a Guide */}
                     <div className="bg-[hsl(var(--surface))] p-8 rounded-xl shadow-lg border border-[hsl(var(--card-border))]">
                         <h3 className="text-2xl font-bold mb-4">Request a New Guide</h3>
+                        <p className="text-sm text-[hsl(var(--foreground))] text-opacity-60 mb-4">Have an idea for a guide you'd love to see? Let us know! Your suggestion could be the next addition to our library.</p>
                         <form onSubmit={handleRequestSubmit} className="space-y-4">
                             <input 
                                 type="text"

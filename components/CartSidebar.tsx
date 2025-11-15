@@ -23,34 +23,52 @@ const generateKeywords = (title: string) => {
 };
 
 const calculateTotals = (cartItems: Product[]) => {
-    const count = cartItems.length;
-    if (count === 0) return { subtotal: 0, total: 0, discount: 0, message: '' };
+    const masterGuide = cartItems.find(item => item.id === 0);
+    const standardGuides = cartItems.filter(item => item.id !== 0);
 
-    const basePrice = 10;
-    const subtotal = count * basePrice;
-    let total = subtotal;
+    const standardGuidesCount = standardGuides.length;
+    let standardGuidesSubtotal = 0;
+    let standardGuidesTotal = 0;
     let message = '';
 
-    const fives = Math.floor(count / 5);
-    const remainder = count % 5;
+    if (standardGuidesCount > 0) {
+        const basePrice = 10;
+        standardGuidesSubtotal = standardGuidesCount * basePrice;
 
-    let remainderPrice = 0;
-    switch (remainder) {
-        case 1: remainderPrice = 10; break;
-        case 2: remainderPrice = 18; break;
-        case 3: remainderPrice = 25; break;
-        case 4: remainderPrice = 40; break;
+        const fives = Math.floor(standardGuidesCount / 5);
+        const remainder = standardGuidesCount % 5;
+
+        let remainderPrice = 0;
+        switch (remainder) {
+            case 1: remainderPrice = 10; break;
+            case 2: remainderPrice = 18; break;
+            case 3: remainderPrice = 25; break;
+            case 4: remainderPrice = 40; break;
+        }
+        
+        standardGuidesTotal = fives * 40 + remainderPrice;
+        const standardGuidesDiscount = standardGuidesSubtotal - standardGuidesTotal;
+
+        if (standardGuidesCount === 1) message = 'Add 1 more for just $8!';
+        else if (standardGuidesCount === 2) message = 'Add 1 more for just $7!';
+        else if (standardGuidesCount === 3) message = 'Add 1 more for just $15!';
+        else if (standardGuidesCount === 4) message = 'Add 1 more & get the 5th for FREE!';
+        else if (standardGuidesDiscount > 0) message = `🎉 You saved $${standardGuidesDiscount.toFixed(2)} with bundle deals!`;
     }
-    
-    total = fives * 40 + remainderPrice;
-    
-    const discount = subtotal - total;
 
-    if (count === 1) message = 'Add 1 more for just $8!';
-    else if (count === 2) message = 'Add 1 more for just $7!';
-    else if (count === 3) message = 'Add 1 more for just $15!';
-    else if (count === 4) message = 'Add 1 more & get the 5th for FREE!';
-    else if (discount > 0) message = `🎉 You saved $${discount.toFixed(2)} with bundle deals!`;
+    const masterGuidePrice = masterGuide ? masterGuide.price : 0;
+    
+    const subtotal = standardGuidesSubtotal + masterGuidePrice;
+    const total = standardGuidesTotal + masterGuidePrice;
+    const discount = subtotal - total;
+    
+    if (masterGuide && standardGuidesCount > 0) {
+        message = "Master Guide added! Bundle discounts apply to other guides."
+    } else if (masterGuide) {
+        message = "You've unlocked the entire library! 💎"
+    }
+
+    if (cartItems.length === 0) return { subtotal: 0, total: 0, discount: 0, message: '' };
 
     return { subtotal, total, discount, message };
 };

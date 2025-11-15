@@ -9,26 +9,6 @@ if (!API_KEY) {
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 let chat: Chat | null = null;
 
-export async function generateImage(prompt: string): Promise<string> {
-  try {
-    const response = await ai.models.generateImages({
-        model: 'imagen-4.0-generate-001',
-        prompt: `Create a high-quality, visually appealing cover image for a digital guide. The theme is: "${prompt}". The image should be abstract and symbolic, suitable for a book cover. Avoid text.`,
-        config: {
-          numberOfImages: 1,
-          outputMimeType: 'image/jpeg',
-          aspectRatio: '1:1',
-        },
-    });
-
-    const base64ImageBytes: string = response.generatedImages[0].image.imageBytes;
-    return `data:image/jpeg;base64,${base64ImageBytes}`;
-  } catch (error) {
-    console.error("Error generating image:", error);
-    throw new Error("Failed to generate image. Please check your prompt and try again.");
-  }
-}
-
 function initializeChat(): Chat {
     return ai.chats.create({
         model: 'gemini-2.5-flash',

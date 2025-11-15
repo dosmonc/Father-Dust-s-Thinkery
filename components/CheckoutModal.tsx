@@ -10,27 +10,39 @@ interface CheckoutModalProps {
 }
 
 const calculateTotals = (cartItems: Product[]) => {
-    const count = cartItems.length;
-    if (count === 0) return { subtotal: 0, total: 0, discount: 0 };
+    const masterGuide = cartItems.find(item => item.id === 0);
+    const standardGuides = cartItems.filter(item => item.id !== 0);
 
-    const basePrice = 10;
-    const subtotal = count * basePrice;
-    let total = subtotal;
+    const standardGuidesCount = standardGuides.length;
+    let standardGuidesSubtotal = 0;
+    let standardGuidesTotal = 0;
 
-    const fives = Math.floor(count / 5);
-    const remainder = count % 5;
+    if (standardGuidesCount > 0) {
+        const basePrice = 10;
+        standardGuidesSubtotal = standardGuidesCount * basePrice;
 
-    let remainderPrice = 0;
-    switch (remainder) {
-        case 1: remainderPrice = 10; break;
-        case 2: remainderPrice = 18; break;
-        case 3: remainderPrice = 25; break;
-        case 4: remainderPrice = 40; break;
+        const fives = Math.floor(standardGuidesCount / 5);
+        const remainder = standardGuidesCount % 5;
+
+        let remainderPrice = 0;
+        switch (remainder) {
+            case 1: remainderPrice = 10; break;
+            case 2: remainderPrice = 18; break;
+            case 3: remainderPrice = 25; break;
+            case 4: remainderPrice = 40; break;
+        }
+        
+        standardGuidesTotal = fives * 40 + remainderPrice;
     }
+
+    const masterGuidePrice = masterGuide ? masterGuide.price : 0;
     
-    total = fives * 40 + remainderPrice;
-    
+    const subtotal = standardGuidesSubtotal + masterGuidePrice;
+    const total = standardGuidesTotal + masterGuidePrice;
     const discount = subtotal - total;
+
+    if (cartItems.length === 0) return { subtotal: 0, total: 0, discount: 0 };
+
     return { subtotal, total, discount };
 };
 

@@ -2,6 +2,15 @@ import { Product } from './types';
 
 export const PRODUCTS: Product[] = [
     {
+        id: 0,
+        title: "Father Dust's Master Guide: The Complete Collection",
+        description: "Unlock the entire library of Father Dust's wisdom. This master guide includes all 29 digital guides, offering a comprehensive toolkit for personal growth, mental health, and business success at a significant discount.",
+        price: 199.00,
+        pages: 297,
+        emoji: "💎",
+        imageKeywords: "library,wisdom,collection,books,knowledge"
+    },
+    {
         id: 1,
         title: "Dark Psychology: Understanding Hidden Behavior",
         description: "Explore the psychological principles behind manipulation and deception. Learn to recognize and protect yourself from dark manipulation tactics.",
@@ -36,15 +45,6 @@ export const PRODUCTS: Product[] = [
         pages: 9,
         emoji: "👶",
         imageKeywords: "baby,sleeping,nursery,moon,calm"
-    },
-    {
-        id: 5,
-        title: "How to Tell Your Friend He's an Addict",
-        description: "Navigate difficult conversations with compassion. Learn to express concern while maintaining your relationship and offering support.",
-        price: 10.00,
-        pages: 8,
-        emoji: "💬",
-        imageKeywords: "conversation,concern,support,friendship,intervention"
     },
     {
         id: 6,
