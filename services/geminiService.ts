@@ -30,3 +30,16 @@ export async function sendMessageToChat(message: string): Promise<string> {
         return "Apologies, my thoughts seem to be scattered at the moment. Could you try asking again?";
     }
 }
+
+export async function generateGuideRequestResponse(topic: string): Promise<string> {
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: `A user of your website 'Father Dust's Thinkery' has requested a new guide on the topic: "${topic}". As 'Father Dust', a wise and whimsical guide, write a short, encouraging response (2-3 sentences). Acknowledge their excellent idea and inform them that you've added it to your list of considerations for future guides.`,
+        });
+        return response.text;
+    } catch (error) {
+        console.error("Error generating guide request response:", error);
+        return "My apologies, my quill seems to have slipped. Could you please try submitting your wonderful idea again?";
+    }
+}

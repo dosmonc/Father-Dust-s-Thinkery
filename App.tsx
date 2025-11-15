@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Product } from './types';
 import { PRODUCTS } from './constants';
 import Header from './components/Header';
@@ -8,6 +8,7 @@ import CheckoutModal from './components/CheckoutModal';
 import ProductDetailModal from './components/ProductDetailModal';
 import { SparklesIcon } from './components/Icons';
 import ChatBox from './components/ChatBox';
+import { generateGuideRequestResponse } from './services/geminiService';
 
 const App: React.FC = () => {
   const [cart, setCart] = useState<Product[]>([]);
@@ -21,6 +22,10 @@ const App: React.FC = () => {
   const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
   
   const [productList] = useState<Product[]>(PRODUCTS);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleAddToCart = useCallback((product: Product) => {
     setCart((prevCart) => {
@@ -50,21 +55,23 @@ const App: React.FC = () => {
     setIsDetailsModalOpen(true);
   }, []);
   
-  const handleRequestSubmit = (e: React.FormEvent) => {
+  const handleRequestSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!requestTopic.trim()) return;
-    setIsSubmittingRequest(true);
-    setRequestResponse("Preparing your email client...");
-
-    const subject = encodeURIComponent("New Guide Request from Father Dust's Thinkery");
-    const body = encodeURIComponent(`Hello Father Dust,\n\nI would like to request a new guide on the following topic:\n\n"${requestTopic}"\n\nThank you!`);
-    window.location.href = `mailto:aiautoally@gmail.com?subject=${subject}&body=${body}`;
+    if (!requestTopic.trim() || isSubmittingRequest) return;
     
-    setRequestTopic('');
-    setTimeout(() => {
-      setIsSubmittingRequest(false);
-      setRequestResponse("Your request has been prepared for sending via your email app. Thanks for the idea!");
-    }, 1500);
+    setIsSubmittingRequest(true);
+    setRequestResponse('');
+
+    try {
+        const response = await generateGuideRequestResponse(requestTopic);
+        setRequestResponse(response);
+    } catch (error) {
+        console.error("Error submitting guide request:", error);
+        setRequestResponse("My apologies, my quill seems to have slipped. Could you please try submitting your wonderful idea again?");
+    } finally {
+        setIsSubmittingRequest(false);
+        setRequestTopic('');
+    }
   };
 
   return (
@@ -119,7 +126,7 @@ const App: React.FC = () => {
                                 placeholder="What topic should we cover next?"
                                 className="w-full p-3 border border-[hsl(var(--border))] rounded-lg bg-[hsl(var(--surface))] focus:ring-2 focus:ring-[hsl(var(--primary))] focus:outline-none"
                             />
-                            <button type="submit" disabled={isSubmittingRequest} className="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-lg font-semibold transition-transform hover:scale-105 disabled:bg-gray-500 disabled:scale-100">
+                            <button type="submit" disabled={isSubmittingRequest} className="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-lg font-semibold transition-transform hover:scale-105 disabled:bg-gray-500 disabled:cursor-not-allowed disabled:scale-100">
                                 {isSubmittingRequest ? 'Submitting...' : 'Submit Request'}
                             </button>
                         </form>
